@@ -1412,12 +1412,18 @@ class Typer(var dbg: Boolean, var verbose: Bool, var explainErrors: Bool, var ne
                     case _ =>
                       Nil // TODO: check what to do if there is something wrong. cannot raise an err(because type is simple type)!
                   }
+                  println("fd => " + fd)
                   println("fields => " + fields)
                   // I want list of vars of signature, sorted.
                   val onlySignatureArgs: List[String] = fields.map(x =>
-                    x._2.value match {
-                      case Var(name) =>
-                        name
+                    x._1 match {
+                      case Some(v) => 
+                        v.name
+                      case None =>
+                        x._2.value match {
+                          case Var(name) => 
+                            name
+                        }
                     })
                   println("onlySignatureArgs => " + onlySignatureArgs)
                   println("final acc => " + acc)

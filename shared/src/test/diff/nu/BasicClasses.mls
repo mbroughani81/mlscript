@@ -33,7 +33,60 @@ fun f(x: A | 'b) = if x is A then x.n else 0
 fun f(x) = x.n
 //│ fun f: forall 'n. {n: 'n} -> 'n
 
+:d
 f(a)
+//│ 0. Typing TypingUnit(List(f (a,)))
+//│ | Typing unit statements
+//│ | | 0. Typing term f (a,)
+//│ | | | f type is gooz => Var(f) class mlscript.Var
+//│ | | | 0. Typing term f
+//│ | | | 0. : ‹∀ 0. (α62' -> n63')›
+//│ | | | 0. Typing term a
+//│ | | | 0. : α44
+//│ | | | f and f_ty => Var(f) ‹∀ 0. (α62' -> n63')›
+//│ | | | a and a_ty => Tup(_: Var(a)) (α44,)
+//│ | | | CONSTRAIN ‹∀ 0. (α62' -> n63')› <! (α44 -> α69)
+//│ | | |   where 
+//│ 		α44 :> #A<Object> <: {n: n47}
+//│ 		n47 :> Int
+//│ 		α62' <: {n: n63'}
+//│ | | | 0. C ‹∀ 0. (α62' -> n63')› <! (α44 -> α69)    (0)
+//│ | | | | could be distribbed: Set(n63')
+//│ | | | | cannot be distribbed: Set(α62', n63')
+//│ | | | | INST [0]   ‹∀ 0. (α62' -> n63')›
+//│ | | | |   where  
+//│ 		α62' <: {n: n63'}
+//│ | | | | TO [0] ~>  (α62_70 -> n63_71)
+//│ | | | |   where  
+//│ 		α62_70 <: {n: n63_71}
+//│ | | | | 0. C (α62_70 -> n63_71) <! (α44 -> α69)    (2)
+//│ | | | | | 0. C (α62_70 -> n63_71) <! (α44 -> α69)    (2)
+//│ | | | | | | 0. C (α44,) <! (α62_70,)    (2)
+//│ | | | | | | | 0. C α44 <! α62_70    (3)
+//│ | | | | | | | | NEW α44 UB (0)
+//│ | | | | | | | | 0. C #A<Object> <! α62_70    (6)
+//│ | | | | | | | | | 0. C #A<Object> <! α62_70    (6)
+//│ | | | | | | | | | | NEW α62_70 LB (0)
+//│ | | | | | | | | | | 0. C #A<Object> <! {n: n63_71}    (9)
+//│ | | | | | | | | | | | 0. C #A<Object> <! {n: n63_71}    (9)
+//│ | | | | | | | | | | | | 0. C #A<Object> <! {n: n63_71}    (9)
+//│ | | | | | | | | | | | | | 0. C #A<Object> <! {n: n63_71}    (9)
+//│ | | | | | | | | | | | | | | 0. C #A<Object> <! {n: n63_71}    (9)
+//│ | | | | | | | | | | | | | | | Looking up field n in Some(A) & TreeSet() & {...}
+//│ | | | | | | | | | | | | | | | | Lookup A.n : Some(Int) where 
+//│ | | | | | | | | | | | | | | | | Fresh[0] A.n : Some(Int) where Some()
+//│ | | | | | | | | | | | | | | | |   & None  (from refinement)
+//│ | | | | | | | | | | | | | | | 0. C Int <! n63_71    (6)
+//│ | | | | | | | | | | | | | | | | NEW n63_71 LB (0)
+//│ | | | | | | 0. C n63_71 <! α69    (2)
+//│ | | | | | | | NEW n63_71 UB (0)
+//│ | | | | | | | 0. C Int <! α69    (5)
+//│ | | | | | | | | NEW α69 LB (0)
+//│ | | 0. : α69
+//│ | : Some(α69)
+//│ ======== TYPED ========
+//│ res: Some(α69) where 
+//│ 		α69 :> Int
 //│ Int
 //│ res
 //│     = 42
@@ -74,11 +127,11 @@ class Base0(n) {
   fun oops = this.my
 }
 //│ ╔══[ERROR] Class parameters currently need type annotations
-//│ ║  l.70: 	class Base0(n) {
-//│ ╙──      	            ^
+//│ ║  l.123: 	class Base0(n) {
+//│ ╙──       	            ^
 //│ ╔══[ERROR] Indirectly-recursive member should have type annotation
-//│ ║  l.74: 	  fun oops = this.my
-//│ ╙──      	                 ^^^
+//│ ║  l.127: 	  fun oops = this.my
+//│ ╙──       	                 ^^^
 //│ class Base0(n: error) {
 //│   fun me: Base0 & {n: error}
 //│   fun mine: error
@@ -168,7 +221,7 @@ b.me
 :e
 b.getBaseTypo
 //│ ╔══[ERROR] Type `Base1` does not contain member `getBaseTypo`
-//│ ║  l.169: 	b.getBaseTypo
+//│ ║  l.222: 	b.getBaseTypo
 //│ ╙──       	 ^^^^^^^^^^^^
 //│ error
 //│ res
