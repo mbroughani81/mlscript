@@ -1003,19 +1003,6 @@ class Typer(var dbg: Boolean, var verbose: Bool, var explainErrors: Bool, var ne
         println("f => " + f)
         println("args_ty => " + args_ty + " " + args_ty.getClass())
         println("fun_ty => " + fun_ty + " " + fun_ty.getClass())
-        // fun_ty match {
-        //   case PolymorphicType(polymLevel, body) => 
-        //     println("polymLevel => " + polymLevel)
-        //     println(s"body => ${body} ${body.getClass()}")
-        //     body match {
-        //       case ProvType(prov) => 
-        //         println(s"prov => ${prov} ${prov.getClass()}" )
-        //         prov match {
-        //           case FunctionType(lhs, rhs) =>
-        //             println(s"lhs ${lhs} ${lhs.getClass()}")
-        //         }
-        //     }
-        // }
         val argsList = fun_ty match {
                         case PolymorphicType(_, ProvType(FunctionType(TupleType(fields), _))) => 
                           fields.map(x => x._1 match {
@@ -1446,14 +1433,25 @@ class Typer(var dbg: Boolean, var verbose: Bool, var explainErrors: Bool, var ne
         a.fields.indexWhere(x => x._1.isDefined) < a.fields.lastIndexWhere(x => x._1.isEmpty)
         ) {
       err("the unnamed args should appear first when using named args!", a.toLoc) 
+    } else
+    if (a.fields.size > argsList.size || a.fields.size < argsList.size) {
+      err("number of parameters dosen't match with the function signature!", a.toLoc) 
     } else {
-      val as = a.fields.zipWithIndex.map{case(x, idx) =>
+      val as = a.fields.zipWithIndex.map{ case(x, idx) =>
         x._1 match {
           case Some(value) => 
             (value.name, x._2)
           case N =>
             (argsList(idx).name, x._2)
         }}
+      if (as.groupBy(x => x._1).size < argsList.size) {
+        as.groupBy(x => x._1).foreach(
+          x =>
+            if (x._2.size > 1) {
+              err(s"parameter ${x._1} is duplicate!", a.toLoc)
+            }
+        )
+      }
       val desugared = rec(as, Map())
       println("Desugared is here => " + desugared)
       term.desugaredTerm = S(desugared)
