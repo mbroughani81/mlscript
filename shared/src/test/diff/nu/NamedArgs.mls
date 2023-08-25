@@ -3,135 +3,306 @@
 fun test(x: 'a) = if x is undefined then 0 else x + 1
 //│ fun test: (x: Int | undefined,) -> Int
 
-:d
-test(x: 0)
-//│ 0. Typing TypingUnit(List(test (x: 0,)))
-//│ | Typing unit statements
-//│ | | 0. Typing term test (x: 0,)
-//│ | | | applying-to-function => test<class mlscript.Var>x: 0,<class mlscript.Tup>
-//│ | | | now we should desugar in case of named args!
-//│ | | | !!named args case!!
-//│ | | | value => CompletedTypeInfo(TypedNuFun(0,fun test = (x: 'a,) => if (is (x,) (undefined,)) then 0 else + (x,) (1,),((x: 'a43',) -> (#0<Int,Num,Object> | α46')))) class mlscript.TyperDatatypes$CompletedTypeInfo
-//│ | | | aa => List((x,Fld(false,false,0)))
-//│ | | | a => x: 0,
-//│ | | | f => Fld(false,false,0)
-//│ | | | v => x
-//│ | | | acc => Map()
-//│ | | | fd => fun test = (x: 'a,) => if (is (x,) (undefined,)) then 0 else + (x,) (1,)
-//│ | | | fields => List((Some(x),Fld(false,false,'a)))
-//│ | | | onlySignatureArgs => List(x)
-//│ | | | final acc => Map(x -> x_1)
-//│ | | | Desugared is here => let x_1 = 0 in test (x_1,)
-//│ | | | 0. Typing term let x_1 = 0 in test (x_1,)
-//│ | | | | 0. Typing term 0
-//│ | | | | 0. : #0<Int,Num,Object>
-//│ | | | | 0. Typing term test (x_1,)
-//│ | | | | | f type is gooz => Var(test) class mlscript.Var
-//│ | | | | | 0. Typing term test
-//│ | | | | | 0. : ‹∀ 0. ((x: 'a43',) -> (#0<Int,Num,Object> | α46'))›
-//│ | | | | | 0. Typing term x_1
-//│ | | | | | 0. : #0<Int,Num,Object>
-//│ | | | | | f and f_ty => Var(test) ‹∀ 0. ((x: 'a43',) -> (#0<Int,Num,Object> | α46'))›
-//│ | | | | | a and a_ty => Tup(_: Var(x_1)) (#0<Int,Num,Object>,)
-//│ | | | | | CONSTRAIN ‹∀ 0. ((x: 'a43',) -> (#0<Int,Num,Object> | α46'))› <! (#0<Int,Num,Object> -> α51)
-//│ | | | | |   where 
-//│ 		'a43' <: (#undefined<Object> | (α44' & ~(#undefined<Object>))) & Object
-//│ 		α44' <: Int
-//│ 		α46' :> Int
-//│ | | | | | 0. C ‹∀ 0. ((x: 'a43',) -> (#0<Int,Num,Object> | α46'))› <! (#0<Int,Num,Object> -> α51)    (0)
-//│ | | | | | | could be distribbed: Set(α46')
-//│ | | | | | | cannot be distribbed: Set('a43', α44')
-//│ | | | | | | inner: ‹∀ 0. (#0<Int,Num,Object> | α46')›
-//│ | | | | | | raised: ((x: 'a43',) -> ‹∀ 1. (#0<Int,Num,Object> | α46_52'')›)
-//│ | | | | | |   where: 
-//│ 		'a43' <: (#undefined<Object> | (α44' & ~(#undefined<Object>))) & Object
-//│ 		α44' <: Int
-//│ 		α46_52'' :> Int
-//│ | | | | | | DISTRIB-L'  ~>  ‹∀ 0. ((x: 'a43',) -> ‹∀ 1. (#0<Int,Num,Object> | α46_52'')›)›
-//│ | | | | | | 0. C ‹∀ 0. ((x: 'a43',) -> ‹∀ 1. (#0<Int,Num,Object> | α46_52'')›)› <! (#0<Int,Num,Object> -> α51)    (2)
-//│ | | | | | | | could be distribbed: Set()
-//│ | | | | | | | INST [0]   ‹∀ 0. ((x: 'a43',) -> ‹∀ 1. (#0<Int,Num,Object> | α46_52'')›)›
-//│ | | | | | | |   where  
-//│ 		'a43' <: (#undefined<Object> | (α44' & ~(#undefined<Object>))) & Object
-//│ 		α44' <: Int
-//│ 		α46_52'' :> Int
-//│ | | | | | | | TO [0] ~>  ((x: 'a43_53,) -> ‹∀ 1. (#0<Int,Num,Object> | α46_52'')›)
-//│ | | | | | | |   where  
-//│ 		α46_52'' :> Int
-//│ 		'a43_53 <: (#undefined<Object> | (α44_54 & ~(#undefined<Object>))) & Object
-//│ 		α44_54 <: Int
-//│ | | | | | | | 0. C ((x: 'a43_53,) -> ‹∀ 1. (#0<Int,Num,Object> | α46_52'')›) <! (#0<Int,Num,Object> -> α51)    (5)
-//│ | | | | | | | | 0. C (#0<Int,Num,Object>,) <! (x: 'a43_53,)    (3)
-//│ | | | | | | | | | 0. C #0<Int,Num,Object> <! 'a43_53    (4)
-//│ | | | | | | | | | | 0. C #0<Int,Num,Object> <! 'a43_53    (4)
-//│ | | | | | | | | | | | NEW 'a43_53 LB (0)
-//│ | | | | | | | | | | | 0. C #0<Int,Num,Object> <! (#undefined<Object> | (α44_54 & ~(#undefined<Object>)))    (7)
-//│ | | | | | | | | | | | | 0. C #0<Int,Num,Object> <! (#undefined<Object> | (α44_54 & ~(#undefined<Object>)))    (7)
-//│ | | | | | | | | | | | | | 0. C #0<Int,Num,Object> <! (#undefined<Object> | (α44_54 & ~(#undefined<Object>)))    (7)
-//│ | | | | | | | | | | | | | | 0. ARGH  DNF(0, #0<Int,Num,Object>{})  <!  DNF(0, #undefined<Object>{} | α44_54∧~(#undefined<Object>))
-//│ | | | | | | | | | | | | | | | DNF DISCHARGE CONSTRAINTS
-//│ | | | | | | | | | | | | | | | Consider #0<Int,Num,Object>{} <: DNF(0, #undefined<Object>{} | α44_54∧~(#undefined<Object>))
-//│ | | | | | | | | | | | | | | | Possible: List(α44_54∧~(#undefined<Object>))
-//│ | | | | | | | | | | | | | | | 0. A  #0<Int,Num,Object>{}  %  List()  <!  List((α44_54 & ~(#undefined<Object>)))  %  ⊥
-//│ | | | | | | | | | | | | | | | | Case.1
-//│ | | | | | | | | | | | | | | | | 0. A  #0<Int,Num,Object>{}  %  List()  <!  List(α44_54)  %  ⊥
-//│ | | | | | | | | | | | | | | | | | 0. C #0<Int,Num,Object> <! α44_54    (10)
-//│ | | | | | | | | | | | | | | | | | | NEW α44_54 LB (0)
-//│ | | | | | | | | | | | | | | | | | | 0. C #0<Int,Num,Object> <! Int    (13)
-//│ | | | | | | | | | | | | | | | | Case.2
-//│ | | | | | | | | | | | | | | | | 0. A  #0<Int,Num,Object>{}  %  List()  <!  List(~(#undefined<Object>))  %  ⊥
-//│ | | | | | | | | | | | | | | | | | 0. A  #0<Int,Num,Object>{}  %  List(#undefined<Object>)  <!  List()  %  ⊥
-//│ | | | | | | | | | | | | | | | | | | OK  #0<Int,Num,Object>{} & #undefined<Object>  =:=  ⊥
-//│ | | | | | | | | | | | 0. C #0<Int,Num,Object> <! Object    (7)
-//│ | | | | | | | | 0. C ‹∀ 1. (#0<Int,Num,Object> | α46_52'')› <! α51    (3)
-//│ | | | | | | | | | NEW α51 LB (0)
-//│ | | | | 0. : α51
-//│ | | | 0. : α51
-//│ | | 0. : α51
-//│ | : Some(α51)
-//│ ======== TYPED ========
-//│ res: Some(α51) where 
-//│ 		α51 :> ‹∀ 1. (#0<Int,Num,Object> | α46_52'')›
-//│ 		α46_52'' :> Int
+test(10)
 //│ Int
+//│ res
+//│     = 11
+
+:p
+test(z: 0)
+//│ |test|(|z|#:| |0|)|
+//│ AST: TypingUnit(App(Var(test), Tup(z: IntLit(0))))
+//│ Parsed: test (z: 0,);
+//│ ╔══[ERROR] Wrong tuple field name: found 'z' instead of 'x'
+//│ ║  l.12: 	test(z: 0)
+//│ ╙──      	    ^^^^^^
+//│ ╔══[ERROR] Type mismatch in application:
+//│ ║  l.12: 	test(z: 0)
+//│ ║        	^^^^
+//│ ╟── expression of type `()` does not match type `(x: 'a,)`
+//│ ╟── Note: constraint arises from tuple literal:
+//│ ║  l.3: 	fun test(x: 'a) = if x is undefined then 0 else x + 1
+//│ ╙──     	        ^^^^^^^
+//│ Int | error
+//│ res
+//│     = 0
+
+// error only appears in debug mode
+test(x: 0, 1)
+//│ ╔══[ERROR] Type mismatch in application:
+//│ ║  l.31: 	test(x: 0, 1)
+//│ ║        	^^^^^^^^^^^^^
+//│ ╟── argument list of type `(x: 0, 1,)` does not match type `(x: 'a,)`
+//│ ║  l.31: 	test(x: 0, 1)
+//│ ║        	    ^^^^^^^^^
+//│ ╟── Note: constraint arises from tuple literal:
+//│ ║  l.3: 	fun test(x: 'a) = if x is undefined then 0 else x + 1
+//│ ╙──     	        ^^^^^^^
+//│ ╔══[ERROR] the unnamed args should appear first when using named args!
+//│ ║  l.31: 	test(x: 0, 1)
+//│ ╙──      	    ^^^^^^^^^
+//│ error
 //│ res
 //│     = 1
 
+
+fun test(x: 'a, y: 'b) = [x, y]
+//│ fun test: forall 'a 'b. (x: 'a, y: 'b,) -> ('a, 'b,)
+
+:p
+test(x: 0, 1)
+//│ |test|(|x|#:| |0|,| |1|)|
+//│ AST: TypingUnit(App(Var(test), Tup(x: IntLit(0), _: IntLit(1))))
+//│ Parsed: test (x: 0, 1,);
+//│ ╔══[ERROR] the unnamed args should appear first when using named args!
+//│ ║  l.53: 	test(x: 0, 1)
+//│ ╙──      	    ^^^^^^^^^
+//│ error
+//│ res
+//│     = [ 0, 1 ]
+
+// why deleting debug flag, makes the exception go?
+:p
+:d
+test(1, x: 0)
+//│ |test|(|1|,| |x|#:| |0|)|
+//│ AST: TypingUnit(App(Var(test), Tup(_: IntLit(1), x: IntLit(0))))
+//│ Parsed: test (1, x: 0,);
+//│ 0. Typing TypingUnit(List(test (1, x: 0,)))
+//│ | Typing unit statements
+//│ | | 0. Typing term test (1, x: 0,)
+//│ | | | 0. Typing term test
+//│ | | | 0. : ‹∀ 0. ((x: 'a75', y: 'b76',) -> ('a75', 'b76',))›
+//│ | | | 0. Typing term 1
+//│ | | | 0. : #1<Int,Num,Object>
+//│ | | | 0. Typing term 0
+//│ | | | 0. : #0<Int,Num,Object>
+//│ | | | f and f_ty => Var(test) ‹∀ 0. ((x: 'a75', y: 'b76',) -> ('a75', 'b76',))›
+//│ | | | a and a_ty => Tup(_: IntLit(1), x: IntLit(0)) (#1<Int,Num,Object>, x: #0<Int,Num,Object>,)
+//│ | | | CONSTRAIN ‹∀ 0. ((x: 'a75', y: 'b76',) -> ('a75', 'b76',))› <! ((#1<Int,Num,Object>, x: #0<Int,Num,Object>,) -> α87)
+//│ | | |   where 
+//│ | | | 0. C ‹∀ 0. ((x: 'a75', y: 'b76',) -> ('a75', 'b76',))› <! ((#1<Int,Num,Object>, x: #0<Int,Num,Object>,) -> α87)    (0)
+//│ | | | | could be distribbed: Set('a75', 'b76')
+//│ | | | | cannot be distribbed: Set('a75', 'b76')
+//│ | | | | INST [0]   ‹∀ 0. ((x: 'a75', y: 'b76',) -> ('a75', 'b76',))›
+//│ | | | |   where  
+//│ | | | | TO [0] ~>  ((x: 'a75_88, y: 'b76_89,) -> ('a75_88, 'b76_89,))
+//│ | | | |   where  
+//│ | | | | 0. C ((x: 'a75_88, y: 'b76_89,) -> ('a75_88, 'b76_89,)) <! ((#1<Int,Num,Object>, x: #0<Int,Num,Object>,) -> α87)    (2)
+//│ | | | | | 0. C ((x: 'a75_88, y: 'b76_89,) -> ('a75_88, 'b76_89,)) <! ((#1<Int,Num,Object>, x: #0<Int,Num,Object>,) -> α87)    (2)
+//│ | | | | | | 0. C (#1<Int,Num,Object>, x: #0<Int,Num,Object>,) <! (x: 'a75_88, y: 'b76_89,)    (2)
+//│ | | | | | | | 0. C #1<Int,Num,Object> <! 'a75_88    (3)
+//│ | | | | | | | | 0. C #1<Int,Num,Object> <! 'a75_88    (3)
+//│ | | | | | | | | | NEW 'a75_88 LB (0)
+//│ | | | | | | | CONSTRAIN #error<> <! α87
+//│ | | | | | | |   where 
+//│ | | | | | | | 0. C #error<> <! α87    (0)
+//│ | | | | | | | | NEW α87 LB (0)
+//│ ╔══[ERROR] Wrong tuple field name: found 'x' instead of 'y'
+//│ ║  l.67: 	test(1, x: 0)
+//│ ╙──      	    ^^^^^^^^^
+//│ | | | | | | | 0. C #0<Int,Num,Object> <! 'b76_89    (3)
+//│ | | | | | | | | 0. C #0<Int,Num,Object> <! 'b76_89    (3)
+//│ | | | | | | | | | NEW 'b76_89 LB (0)
+//│ | | | | | | 0. C ('a75_88, 'b76_89,) <! α87    (2)
+//│ | | | | | | | NEW α87 LB (0)
+//│ | | | f => test
+//│ | | | args_ty => (#1<Int,Num,Object>, x: #0<Int,Num,Object>,) class mlscript.TyperDatatypes$TupleType
+//│ | | | fun_ty => ‹∀ 0. ((x: 'a75', y: 'b76',) -> ('a75', 'b76',))› class mlscript.TyperDatatypes$PolymorphicType
+//│ | | | argsList => List(x, y)
+//│ | | | a is => 1, x: 0,
+//│ | | | final acc => Map(x -> x_1)
+//│ ╔══[ERROR] name y used in binding are not matched with the function signature!
+//│ ║  l.67: 	test(1, x: 0)
+//│ ╙──      	    ^^^^^^^^^
+//│ | | | Desugared is here => let x_1 = 1 in let x_1 = 0 in test (x_1, dummy,)
+//│ | | | 0. Typing term let x_1 = 1 in let x_1 = 0 in test (x_1, dummy,)
+//│ | | | | 0. Typing term 1
+//│ | | | | 0. : #1<Int,Num,Object>
+//│ | | | | 0. Typing term let x_1 = 0 in test (x_1, dummy,)
+//│ | | | | | 0. Typing term 0
+//│ | | | | | 0. : #0<Int,Num,Object>
+//│ | | | | | 0. Typing term test (x_1, dummy,)
+//│ | | | | | | f type is gooz => Var(test) class mlscript.Var
+//│ | | | | | | 0. Typing term test
+//│ | | | | | | 0. : ‹∀ 0. ((x: 'a75', y: 'b76',) -> ('a75', 'b76',))›
+//│ | | | | | | 0. Typing term x_1
+//│ | | | | | | 0. : #0<Int,Num,Object>
+//│ | | | | | | 0. Typing term dummy
+//│ ╔══[ERROR] identifier not found: dummy
+//│ ╙──
+//│ | | | | | | 0. : #error<>
+//│ | | | | | | f and f_ty => Var(test) ‹∀ 0. ((x: 'a75', y: 'b76',) -> ('a75', 'b76',))›
+//│ | | | | | | a and a_ty => Tup(_: Var(x_1), _: Var(dummy)) (#0<Int,Num,Object>, #error<>,)
+//│ | | | | | | CONSTRAIN ‹∀ 0. ((x: 'a75', y: 'b76',) -> ('a75', 'b76',))› <! ((#0<Int,Num,Object>, #error<>,) -> α90)
+//│ | | | | | |   where 
+//│ | | | | | | 0. C ‹∀ 0. ((x: 'a75', y: 'b76',) -> ('a75', 'b76',))› <! ((#0<Int,Num,Object>, #error<>,) -> α90)    (0)
+//│ | | | | | | | could be distribbed: Set('a75', 'b76')
+//│ | | | | | | | cannot be distribbed: Set('a75', 'b76')
+//│ | | | | | | | INST [0]   ‹∀ 0. ((x: 'a75', y: 'b76',) -> ('a75', 'b76',))›
+//│ | | | | | | |   where  
+//│ | | | | | | | TO [0] ~>  ((x: 'a75_91, y: 'b76_92,) -> ('a75_91, 'b76_92,))
+//│ | | | | | | |   where  
+//│ | | | | | | | 0. C ((x: 'a75_91, y: 'b76_92,) -> ('a75_91, 'b76_92,)) <! ((#0<Int,Num,Object>, #error<>,) -> α90)    (2)
+//│ | | | | | | | | 0. C ((x: 'a75_91, y: 'b76_92,) -> ('a75_91, 'b76_92,)) <! ((#0<Int,Num,Object>, #error<>,) -> α90)    (2)
+//│ | | | | | | | | | 0. C (#0<Int,Num,Object>, #error<>,) <! (x: 'a75_91, y: 'b76_92,)    (2)
+//│ | | | | | | | | | | 0. C #0<Int,Num,Object> <! 'a75_91    (3)
+//│ | | | | | | | | | | | 0. C #0<Int,Num,Object> <! 'a75_91    (3)
+//│ | | | | | | | | | | | | NEW 'a75_91 LB (0)
+//│ | | | | | | | | | | 0. C #error<> <! 'b76_92    (3)
+//│ | | | | | | | | | | | 0. C #error<> <! 'b76_92    (3)
+//│ | | | | | | | | | | | | NEW 'b76_92 LB (0)
+//│ | | | | | | | | | 0. C ('a75_91, 'b76_92,) <! α90    (2)
+//│ | | | | | | | | | | NEW α90 LB (0)
+//│ | | | | | 0. : α90
+//│ | | | | 0. : α90
+//│ | | | 0. : α90
+//│ | | 0. : α90
+//│ | : Some(α90)
+//│ ======== TYPED ========
+//│ res: Some(α90) where 
+//│ 		α90 :> ('a75_91, 'b76_92,)
+//│ 		'a75_91 :> #0<Int,Num,Object>
+//│ 		'b76_92 :> #error<>
+//│ (0, error,)
+//│ Code generation encountered an error:
+//│   unresolved symbol dummy
+
 :e
 test(y: 0)
-//│ ╔══[ERROR] the named used in binding are not matched with the function signature!
-//│ ╙──
-//│ /!!!\ Uncaught error: scala.MatchError: None (of class scala.None$)
-//│ 	at: mlscript.Typer.$anonfun$desugarNamedArgs$11(Typer.scala:1437)
-//│ 	at: scala.collection.immutable.List.map(List.scala:246)
-//│ 	at: mlscript.Typer.rec$2(Typer.scala:1436)
-//│ 	at: mlscript.Typer.rec$2(Typer.scala:1405)
-//│ 	at: mlscript.Typer.desugarNamedArgs(Typer.scala:1462)
-//│ 	at: mlscript.Typer.$anonfun$typeTerm$2(Typer.scala:1001)
-//│ 	at: mlscript.TyperHelpers.trace(TyperHelpers.scala:32)
-//│ 	at: mlscript.Typer.typeTerm(Typer.scala:1155)
-//│ 	at: mlscript.Typer.typeTerms(Typer.scala:1302)
-//│ 	at: mlscript.NuTypeDefs.go$1(NuTypeDefs.scala:577)
+//│ ╔══[ERROR] Type mismatch in application:
+//│ ║  l.172: 	test(y: 0)
+//│ ║         	^^^^^^^^^^
+//│ ╟── argument list of type `(y: 0,)` does not match type `(x: 'a, y: 'b,)`
+//│ ║  l.172: 	test(y: 0)
+//│ ║         	    ^^^^^^
+//│ ╟── Note: constraint arises from tuple literal:
+//│ ║  l.49: 	fun test(x: 'a, y: 'b) = [x, y]
+//│ ╙──      	        ^^^^^^^^^^^^^^
+//│ ╔══[ERROR] Type mismatch in application:
+//│ ║  l.172: 	test(y: 0)
+//│ ║         	^^^^
+//│ ╟── expression of type `()` does not match type `(x: 'a, y: 'b,)`
+//│ ╟── Note: constraint arises from tuple literal:
+//│ ║  l.49: 	fun test(x: 'a, y: 'b) = [x, y]
+//│ ╙──      	        ^^^^^^^^^^^^^^
+//│ error | (nothing, nothing,)
+//│ res
+//│     = [ undefined, undefined ]
 
 
 fun test(x) = x + 1
 //│ fun test: Int -> Int
 
-:e
+// error of not matching only shown with debug flag??
+:d
 test(y: 0)
-//│ ╔══[ERROR] the named used in binding are not matched with the function signature!
+//│ 0. Typing TypingUnit(List(test (y: 0,)))
+//│ | Typing unit statements
+//│ | | 0. Typing term test (y: 0,)
+//│ | | | 0. Typing term test
+//│ | | | 0. : ‹∀ 0. (α105' -> α107')›
+//│ | | | 0. Typing term 0
+//│ | | | 0. : #0<Int,Num,Object>
+//│ | | | f and f_ty => Var(test) ‹∀ 0. (α105' -> α107')›
+//│ | | | a and a_ty => Tup(y: IntLit(0)) (y: #0<Int,Num,Object>,)
+//│ | | | CONSTRAIN ‹∀ 0. (α105' -> α107')› <! ((y: #0<Int,Num,Object>,) -> α111)
+//│ | | |   where 
+//│ 		α105' <: Int
+//│ 		α107' :> Int
+//│ | | | 0. C ‹∀ 0. (α105' -> α107')› <! ((y: #0<Int,Num,Object>,) -> α111)    (0)
+//│ | | | | could be distribbed: Set(α107')
+//│ | | | | cannot be distribbed: Set(α105')
+//│ | | | | inner: ‹∀ 0. α107'›
+//│ | | | | raised: (α105' -> ‹∀ 1. α107_112''›)
+//│ | | | |   where: 
+//│ 		α105' <: Int
+//│ 		α107_112'' :> Int
+//│ | | | | DISTRIB-L'  ~>  ‹∀ 0. (α105' -> ‹∀ 1. α107_112''›)›
+//│ | | | | 0. C ‹∀ 0. (α105' -> ‹∀ 1. α107_112''›)› <! ((y: #0<Int,Num,Object>,) -> α111)    (2)
+//│ | | | | | could be distribbed: Set()
+//│ | | | | | INST [0]   ‹∀ 0. (α105' -> ‹∀ 1. α107_112''›)›
+//│ | | | | |   where  
+//│ 		α105' <: Int
+//│ 		α107_112'' :> Int
+//│ | | | | | TO [0] ~>  (α105_113 -> ‹∀ 1. α107_112''›)
+//│ | | | | |   where  
+//│ 		α107_112'' :> Int
+//│ 		α105_113 <: Int
+//│ | | | | | 0. C (α105_113 -> ‹∀ 1. α107_112''›) <! ((y: #0<Int,Num,Object>,) -> α111)    (5)
+//│ | | | | | | 0. C (y: #0<Int,Num,Object>,) <! (α105_113,)    (3)
+//│ | | | | | | | 0. C #0<Int,Num,Object> <! α105_113    (4)
+//│ | | | | | | | | NEW α105_113 LB (0)
+//│ | | | | | | | | 0. C #0<Int,Num,Object> <! Int    (7)
+//│ | | | | | | 0. C ‹∀ 1. α107_112''› <! α111    (3)
+//│ | | | | | | | NEW α111 LB (0)
+//│ | | | f => test
+//│ | | | args_ty => (y: #0<Int,Num,Object>,) class mlscript.TyperDatatypes$TupleType
+//│ | | | fun_ty => ‹∀ 0. (α105' -> α107')› class mlscript.TyperDatatypes$PolymorphicType
+//│ | | | argsList => List(dummy)
+//│ | | | a is => y: 0,
+//│ | | | final acc => Map(y -> y_1)
+//│ ╔══[ERROR] name dummy used in binding are not matched with the function signature!
+//│ ║  l.199: 	test(y: 0)
+//│ ╙──       	    ^^^^^^
+//│ | | | Desugared is here => let y_1 = 0 in test (dummy,)
+//│ | | | 0. Typing term let y_1 = 0 in test (dummy,)
+//│ | | | | 0. Typing term 0
+//│ | | | | 0. : #0<Int,Num,Object>
+//│ | | | | 0. Typing term test (dummy,)
+//│ | | | | | f type is gooz => Var(test) class mlscript.Var
+//│ | | | | | 0. Typing term test
+//│ | | | | | 0. : ‹∀ 0. (α105' -> α107')›
+//│ | | | | | 0. Typing term dummy
+//│ ╔══[ERROR] identifier not found: dummy
 //│ ╙──
-//│ /!!!\ Uncaught error: scala.MatchError: None (of class scala.None$)
-//│ 	at: mlscript.Typer.$anonfun$desugarNamedArgs$11(Typer.scala:1437)
-//│ 	at: scala.collection.immutable.List.map(List.scala:246)
-//│ 	at: mlscript.Typer.rec$2(Typer.scala:1436)
-//│ 	at: mlscript.Typer.rec$2(Typer.scala:1405)
-//│ 	at: mlscript.Typer.desugarNamedArgs(Typer.scala:1462)
-//│ 	at: mlscript.Typer.$anonfun$typeTerm$2(Typer.scala:1001)
-//│ 	at: mlscript.TyperHelpers.trace(TyperHelpers.scala:32)
-//│ 	at: mlscript.Typer.typeTerm(Typer.scala:1155)
-//│ 	at: mlscript.Typer.typeTerms(Typer.scala:1302)
-//│ 	at: mlscript.NuTypeDefs.go$1(NuTypeDefs.scala:577)
+//│ | | | | | 0. : #error<>
+//│ | | | | | f and f_ty => Var(test) ‹∀ 0. (α105' -> α107')›
+//│ | | | | | a and a_ty => Tup(_: Var(dummy)) (#error<>,)
+//│ | | | | | CONSTRAIN ‹∀ 0. (α105' -> α107')› <! (#error<> -> α114)
+//│ | | | | |   where 
+//│ 		α105' <: Int
+//│ 		α107' :> Int
+//│ | | | | | 0. C ‹∀ 0. (α105' -> α107')› <! (#error<> -> α114)    (0)
+//│ | | | | | | could be distribbed: Set(α107')
+//│ | | | | | | cannot be distribbed: Set(α105')
+//│ | | | | | | inner: ‹∀ 0. α107'›
+//│ | | | | | | raised: (α105' -> ‹∀ 1. α107_115''›)
+//│ | | | | | |   where: 
+//│ 		α105' <: Int
+//│ 		α107_115'' :> Int
+//│ | | | | | | DISTRIB-L'  ~>  ‹∀ 0. (α105' -> ‹∀ 1. α107_115''›)›
+//│ | | | | | | 0. C ‹∀ 0. (α105' -> ‹∀ 1. α107_115''›)› <! (#error<> -> α114)    (2)
+//│ | | | | | | | could be distribbed: Set()
+//│ | | | | | | | INST [0]   ‹∀ 0. (α105' -> ‹∀ 1. α107_115''›)›
+//│ | | | | | | |   where  
+//│ 		α105' <: Int
+//│ 		α107_115'' :> Int
+//│ | | | | | | | TO [0] ~>  (α105_116 -> ‹∀ 1. α107_115''›)
+//│ | | | | | | |   where  
+//│ 		α107_115'' :> Int
+//│ 		α105_116 <: Int
+//│ | | | | | | | 0. C (α105_116 -> ‹∀ 1. α107_115''›) <! (#error<> -> α114)    (5)
+//│ | | | | | | | | 0. C (#error<>,) <! (α105_116,)    (3)
+//│ | | | | | | | | | 0. C #error<> <! α105_116    (4)
+//│ | | | | | | | | | | NEW α105_116 LB (0)
+//│ | | | | | | | | | | 0. C #error<> <! Int    (7)
+//│ | | | | | | | | | | | 0. C #error<> <! Int    (7)
+//│ | | | | | | | | | | | | 0. C #error<> <! Int    (7)
+//│ | | | | | | | | | | | | | 0. C #error<> <! Int    (7)
+//│ | | | | | | | | 0. C ‹∀ 1. α107_115''› <! α114    (3)
+//│ | | | | | | | | | NEW α114 LB (0)
+//│ | | | | 0. : α114
+//│ | | | 0. : α114
+//│ | | 0. : α114
+//│ | : Some(α114)
+//│ ======== TYPED ========
+//│ res: Some(α114) where 
+//│ 		α114 :> ‹∀ 1. α107_115''›
+//│ 		α107_115'' :> Int
+//│ Int
+//│ Code generation encountered an error:
+//│   unresolved symbol dummy
 
 
 fun fff(x: Int, y: Int, z: Int) = (x - y) * z
@@ -146,14 +317,17 @@ fff(1, 2, 3)
 //│ res
 //│     = -3
 
-:p
 fff(y: 2, z: 3, x: 1)
-//│ |fff|(|y|#:| |2|,| |z|#:| |3|,| |x|#:| |1|)|
-//│ AST: TypingUnit(App(Var(fff), Tup(y: IntLit(2), z: IntLit(3), x: IntLit(1))))
-//│ Parsed: fff (y: 2, z: 3, x: 1,);
-//│ Int
+//│ ╔══[ERROR] Type mismatch in application:
+//│ ║  l.320: 	fff(y: 2, z: 3, x: 1)
+//│ ║         	^^^
+//│ ╟── expression of type `()` does not match type `(x: Int, y: Int, z: Int,)`
+//│ ╟── Note: constraint arises from tuple literal:
+//│ ║  l.308: 	fun fff(x: Int, y: Int, z: Int) = (x - y) * z
+//│ ╙──       	       ^^^^^^^^^^^^^^^^^^^^^^^^
+//│ Int | error
 //│ res
-//│     = -3
+//│     = NaN
 
 // Tests for new-variable-creation
 :e
@@ -163,12 +337,28 @@ fff(y: 2, z: y_1 + 1, x: z_1 - 2)
 //│ AST: TypingUnit(App(Var(fff), Tup(y: IntLit(2), z: App(App(Var(+), Tup(_: Var(y_1))), Tup(_: IntLit(1))), x: App(App(Var(-), Tup(_: Var(z_1))), Tup(_: IntLit(2))))))
 //│ Parsed: fff (y: 2, z: + (y_1,) (1,), x: - (z_1,) (2,),);
 //│ ╔══[ERROR] identifier not found: y_1
-//│ ║  l.161: 	fff(y: 2, z: y_1 + 1, x: z_1 - 2)
+//│ ║  l.335: 	fff(y: 2, z: y_1 + 1, x: z_1 - 2)
 //│ ╙──       	             ^^^
 //│ ╔══[ERROR] identifier not found: z_1
-//│ ║  l.161: 	fff(y: 2, z: y_1 + 1, x: z_1 - 2)
+//│ ║  l.335: 	fff(y: 2, z: y_1 + 1, x: z_1 - 2)
 //│ ╙──       	                         ^^^
-//│ Int
+//│ ╔══[ERROR] Wrong tuple field name: found 'y' instead of 'x'
+//│ ║  l.335: 	fff(y: 2, z: y_1 + 1, x: z_1 - 2)
+//│ ╙──       	   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//│ ╔══[ERROR] identifier not found: y_1
+//│ ║  l.335: 	fff(y: 2, z: y_1 + 1, x: z_1 - 2)
+//│ ╙──       	             ^^^
+//│ ╔══[ERROR] identifier not found: z_1
+//│ ║  l.335: 	fff(y: 2, z: y_1 + 1, x: z_1 - 2)
+//│ ╙──       	                         ^^^
+//│ ╔══[ERROR] Type mismatch in application:
+//│ ║  l.335: 	fff(y: 2, z: y_1 + 1, x: z_1 - 2)
+//│ ║         	^^^
+//│ ╟── expression of type `()` does not match type `(x: Int, y: Int, z: Int,)`
+//│ ╟── Note: constraint arises from tuple literal:
+//│ ║  l.308: 	fun fff(x: Int, y: Int, z: Int) = (x - y) * z
+//│ ╙──       	       ^^^^^^^^^^^^^^^^^^^^^^^^
+//│ Int | error
 //│ Code generation encountered an error:
 //│   unresolved symbol z_1
 
@@ -179,12 +369,22 @@ fff(y: 2, z: y_1 + 1, x: z_1 - 2)
 //│ |#let| |y_1| |#=| |2|↵|#let| |z_1| |#=| |3|↵|fff|(|y|#:| |2|,| |z|#:| |y_1| |+| |1|,| |x|#:| |z_1| |-| |2|)|
 //│ AST: TypingUnit(NuFunDef(Some(false), y_1, [], IntLit(2)), NuFunDef(Some(false), z_1, [], IntLit(3)), App(Var(fff), Tup(y: IntLit(2), z: App(App(Var(+), Tup(_: Var(y_1))), Tup(_: IntLit(1))), x: App(App(Var(-), Tup(_: Var(z_1))), Tup(_: IntLit(2))))))
 //│ Parsed: let y_1 = 2; let z_1 = 3; fff (y: 2, z: + (y_1,) (1,), x: - (z_1,) (2,),);
+//│ ╔══[ERROR] Wrong tuple field name: found 'y' instead of 'x'
+//│ ║  l.368: 	fff(y: 2, z: y_1 + 1, x: z_1 - 2)
+//│ ╙──       	   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//│ ╔══[ERROR] Type mismatch in application:
+//│ ║  l.368: 	fff(y: 2, z: y_1 + 1, x: z_1 - 2)
+//│ ║         	^^^
+//│ ╟── expression of type `()` does not match type `(x: Int, y: Int, z: Int,)`
+//│ ╟── Note: constraint arises from tuple literal:
+//│ ║  l.308: 	fun fff(x: Int, y: Int, z: Int) = (x - y) * z
+//│ ╙──       	       ^^^^^^^^^^^^^^^^^^^^^^^^
 //│ let y_1: 2
 //│ let z_1: 3
-//│ Int
+//│ Int | error
 //│ y_1
 //│     = 2
 //│ z_1
 //│     = 3
 //│ res
-//│     = -3
+//│     = NaN
