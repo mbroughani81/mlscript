@@ -1033,7 +1033,6 @@ class Typer(var dbg: Boolean, var verbose: Bool, var explainErrors: Bool, var ne
         // typeTerm(f)
       case App(f: Term, a: Term) =>
         // TODO: probably better to merge this case with previous one.
-        println("f type is gooz => " + codegen.Helpers.inspect(f) + " " + f.getClass())
         val (args_ty, fun_ty, res) = typeUnnamedApp(f, a)
         val res_ty = con(fun_ty, FunctionType(args_ty, res)(
             prov
@@ -1460,93 +1459,7 @@ class Typer(var dbg: Boolean, var verbose: Bool, var explainErrors: Bool, var ne
       term.desugaredTerm = S(desugared)
       typeTerm(desugared)(ctx = ctx, raise = raise, vars = vars, genLambdas = false)
     }
-    // EMD
-    // ctx.get(name) match {
-    //   case Some(value) => 
-    //     println("value => " + value  + " " + value.getClass())
-    //     value match {
-    //       case CompletedTypeInfo(TypedNuFun(level: Level, fd: NuFunDef, bodyType: ST)) =>
-    //         // 1. check if list is in this format : N, N, N, Some, Some, ... TODO
-    //         // 2. create let bindings
-    //         def rec (as: List[String -> Fld], acc: Map[String, Var]): Term = {
-    //           as match {
-    //             case (v, f) :: tail =>
-    //               println("f => " + f)
-    //               println("v => " + v)
-    //               println("acc => " + acc)
-    //               val newVar = Var(getNewVarName(v, freeVars(ctx, a)))
-    //               Let(false, newVar, f.value, rec(tail, acc + (v -> newVar)))
-    //             case Nil =>
-    //               // call the function 
-    //               // only the var name in the function call
-    //               val fields = fd.rhs match {
-    //                 case Left(Lam(Tup(fields), rhs)) => 
-    //                   fields
-    //                 case _ =>
-    //                   Nil // TODO: check what to do if there is something wrong. cannot raise an err(because type is simple type)!
-    //               }
-    //               println("fd => " + fd)
-    //               println("fields => " + fields)
-    //               // I want list of vars of signature, sorted.
-    //               val onlySignatureArgs: List[String] = fields.map(x =>
-    //                 x._1 match {
-    //                   case Some(v) => 
-    //                     v.name
-    //                   case None =>
-    //                     x._2.value match {
-    //                       case Var(name) => 
-    //                         name
-    //                     }
-    //                 })
-    //               println("onlySignatureArgs => " + onlySignatureArgs)
-    //               println("final acc => " + acc)
-
-    //               // check if there is one args of signature not present in map
-    //               // onlySignatureArgs.foreach(x => 
-    //               //   if (!acc.contains(x))
-    //               // )
-    //               val y: Term = Tup(onlySignatureArgs.map(x => 
-    //                 acc.get(x) match {
-    //                   case Some(v) => 
-    //                     (None, Fld(false, false, v))
-    //                   case None =>
-    //                     err(s"name ${x} used in binding are not matched with the function signature!", N)
-    //                     (None, Fld(false, false, Var("dummy")))
-    //                 }
-    //               ))
-    //               // val y: Tup = Tup(fields.map(x =>
-    //               //                   x._2.value match {
-    //               //                     case Var(name) => 
-    //               //                       (None, Fld(false, false, Var(name)))
-    //               //                   }))
-    //               // // println("y => " + y)
-    //               // // val yy: List[Opt[Var] -> Fld] = Nil
-
-    //               App(f, y)
-    //           }
-    //         }
-    //         val aa = a.fields.map(x => 
-    //           x._1 match {
-    //             case Some(value) => 
-    //               (value.name, x._2)
-    //             case N =>
-    //               ("ggg", x._2)
-    //           })
-    //         println("aa => " + aa)
-    //         println("a => " + a)
-    //         val desugared = rec(aa, Map())
-            // println("Desugared is here => " + desugared)
-    //         term.desugaredTerm = S(desugared)
-    //         // 3. type the term
-            // typeTerm(desugared)(ctx = ctx, raise = raise, vars = vars, genLambdas = false) 
-    //       case other =>
-    //         err("type is not correct.", f.toLoc)
-    //     }
-    //   case None => 
-    //       err("type identifier not found: " + name, f.toLoc)
-    // }
   }
-  
   
   /** Convert an inferred SimpleType into the immutable Type representation. */
   def expandType(st: TypeLike, stopAtTyVars: Bool = false)(implicit ctx: Ctx): mlscript.TypeLike = {
